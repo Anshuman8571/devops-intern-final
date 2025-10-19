@@ -1,0 +1,25 @@
+# How to set up and query logs with Loki
+
+## 1. Create a Docker Network
+# This allows the containers to communicate using their names.
+docker network create loki
+
+## 2. Start Loki
+# This command starts the Loki log-aggregation server.
+docker run --name loki -d --network loki -p 3100:3100 grafana/loki:latest
+
+## 3. Start Promtail
+# This command starts Promtail, the log agent. It needs access to the Docker socket
+# to discover containers and the config file we created.
+# Replace "$(pwd)" with the full path to your project directory if needed.
+docker run --name promtail -d --network loki -v $(pwd)/monitoring/promtail-config.yml:/etc/promtail/config.yml -v /var/run/docker.sock:/var/run/docker.sock grafana/promtail:latest
+
+## 4. Run the Monitored Application
+# Run any container; Promtail will automatically pick up its logs.
+docker run --rm --name my-test-app alpine echo "Hello from my monitored container!"
+
+## 5. View Logs with logcli
+# Use logcli to query Loki for logs from the container.
+# This command finds logs where the 'container' label is 'my-test-app'.
+docker run --network loki -it grafana/logcli:latest --addr=http://loki:3100 labels
+docker run --network loki -it grafana/logcli:latest --addr=http://loki:3100 query '{container="my-test-app"}'
