@@ -10,7 +10,7 @@ job "hello-devops" {
 
       config {
         image = "anshuman271/hello-devops:latest"
-        pull = true
+        force_pull = true
       }
 
       resources {
