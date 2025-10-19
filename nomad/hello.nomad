@@ -1,23 +1,22 @@
 job "hello-devops" {
-    datacenters = ["dc1]
-    type = "service"
+  datacenters = ["dc1"]
+  type = "service"
 
-    group "app" {
-        count = 1
+  group "app" {
+    count = 1
 
-        task "server" {
-            driver = "docker"
+    task "server" {
+      driver = "docker"
 
-            config {
-                image = "anshuman271/hello-devops:latest"
-                pull = true
-            }
+      config {
+        image = "anshuman271/hello-devops:latest"
+        pull = true
+      }
 
-            resources {
-                cpu = 100 #100MHz
-                memory = 64 #64 MB
-
-            }
-        }
+      resources {
+        cpu    = 100 # 100 MHz
+        memory = 64  # 64 MB
+      }
     }
+  }
 }
